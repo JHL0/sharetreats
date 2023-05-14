@@ -44,7 +44,8 @@ public class ShareTreats {
             case "HELP":
                 return "Commands: \n\t\tCHECK [상품코드]\n" +
                         "\t\tHELP\n" +
-                        "\t\tCLAIM [상점코드] [상품코드]\n";
+                        "\t\tCLAIM [상점코드] [상품코드]\n" +
+                        "\t\tEXIT 프로그램 종료";
             case "CLAIM":
                 return claimProduct(commandParts[1], commandParts[2]);
             default:
@@ -53,11 +54,14 @@ public class ShareTreats {
     }
 
     private String checkProduct(String productCode) {
-        if (productCodes.containsKey(productCode) && productCodes.get(productCode).equals("available")) {
-            return "상품코드 " + productCode + " 는 사용 가능 합니다.";
-        } else {
-            return "상품코드 " + productCode + " 는 사용 불가 합니다.";
+        if (productCodes.containsKey(productCode)) {
+            if (productCodes.get(productCode).equals("claimed")) {
+                return "상품코드 " + productCode + " 는 이미 사용되었습니다.";
+            } else {
+                return "상품코드 " + productCode + " 는 사용 가능 합니다.";
+            }
         }
+        return "상품코드 " + productCode + " 는 사용 불가 합니다.";
     }
 
     private String claimProduct(String storeCode, String productCode) {
@@ -65,12 +69,16 @@ public class ShareTreats {
             return "올바르지 않은 상점코드 입니다.";
         }
 
-        if (productCodes.containsKey(productCode) && productCodes.get(productCode).equals("available")) {
-            productCodes.put(productCode, "claimed");
-            return "상품코드 " + productCode + " 가 상점코드 " + storeCode + " 에 사용되었습니다.";
-        } else {
-            return "상품코드 " + productCode + " 는 상용 불가한 코드이거나 상점코드 " + storeCode + " 에서 사용 불가합니다.";
+        if (productCodes.containsKey(productCode)) {
+            if (productCodes.get(productCode).equals("available")) {
+                productCodes.put(productCode, "claimed");
+                return "상품코드 " + productCode + " 가 상점코드 " + storeCode + " 에 사용되었습니다.";
+            } else {
+                return "상품코드 " + productCode + " 는 이미 사용되었습니다.";
+            }
         }
+
+        return "상품코드 " + productCode + " 는 상용 불가한 코드이거나 상점코드 " + storeCode + " 에서 사용 불가합니다.";
     }
 
 
